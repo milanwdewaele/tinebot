@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, GatewayIntentBits, PermissionsBitField } = require('discord.js');
+const { Client, GatewayIntentBits, PermissionsBitField, ActivityType } = require('discord.js');
 
 const client = new Client({
   intents: [
@@ -16,7 +16,10 @@ const PREFIX = 'tine ';
 client.once('ready', () => {
   console.log(`✅ Bot is online as ${client.user.tag}`);
   console.log(`📝 Prefix: ${PREFIX}`);
+
+  client.user.setActivity('tine help', { type: ActivityType.Listening });
 });
+
 
 client.on('messageCreate', async (message) => {
   // Ignore bot messages
@@ -32,16 +35,16 @@ client.on('messageCreate', async (message) => {
   // Command: mute
   if (command === 'mute') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      return message.reply('❌ You do not have permission to mute members.');
+      return message.reply('❌ Jij mag da nie doen >:(');
     }
     
     const targetMember = message.mentions.members.first();
     if (!targetMember) {
-      return message.reply('❌ Please mention a user to mute. Usage: `tine mute @user [duration] [reason]`');
+      return message.reply('❌ Wie bedoel je? Probeer `tine mute @user [hoelang] [waarom]`');
     }
     
     if (!targetMember.moderatable) {
-      return message.reply('❌ I cannot mute this user.');
+      return message.reply('❌ Godverdomme ik krijg die persoon nie stil.');
     }
     
     // Parse duration (default: 10 minutes)
@@ -50,97 +53,97 @@ client.on('messageCreate', async (message) => {
       duration = parseInt(args[1]) * 60 * 1000; // Convert minutes to ms
     }
     
-    const reason = args.slice(args[1] && !isNaN(args[1]) ? 2 : 1).join(' ') || 'No reason provided';
+    const reason = args.slice(args[1] && !isNaN(args[1]) ? 2 : 1).join(' ') || 'Omdat het kan';
     
     try {
       await targetMember.timeout(duration, reason);
-      message.reply(`✅ ${targetMember.user.tag} has been muted for ${duration / 60000} minutes. Reason: ${reason}`);
+      message.reply(`✅ ${targetMember.user.tag} ga zwijgen voor ${duration / 60000} minuten. Reden? ${reason}.`);
     } catch (error) {
       console.error(error);
-      message.reply('❌ An error occurred while muting the user.');
+      message.reply('❌ Ik kon die persoon niet doen fucking zwijgen.');
     }
   }
   
   // Command: unmute
   if (command === 'unmute') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      return message.reply('❌ You do not have permission to unmute members.');
+      return message.reply('❌ Jij mag da nie doen >:(');
     }
     
     const targetMember = message.mentions.members.first();
     if (!targetMember) {
-      return message.reply('❌ Please mention a user to unmute. Usage: `tine unmute @user`');
+      return message.reply('❌ Wie bedoel je? Probeer `tine unmute @user`');
     }
     
     if (!targetMember.moderatable) {
-      return message.reply('❌ I cannot unmute this user.');
+      return message.reply('❌ Ik kan die persoon nie doen praten.');
     }
     
     try {
       await targetMember.timeout(null);
-      message.reply(`✅ ${targetMember.user.tag} has been unmuted.`);
+      message.reply(`✅ ${targetMember.user.tag} kan terug praten.`);
     } catch (error) {
       console.error(error);
-      message.reply('❌ An error occurred while unmuting the user.');
+      message.reply('❌ Er is iets misgegaan, oops :)');
     }
   }
   
   // Command: kick
   if (command === 'kick') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
-      return message.reply('❌ You do not have permission to kick members.');
+      return message.reply('❌ Jij mag da nie doen >:(');
     }
     
     const targetMember = message.mentions.members.first();
     if (!targetMember) {
-      return message.reply('❌ Please mention a user to kick. Usage: `tine kick @user [reason]`');
+      return message.reply('❌ Wie bedoel je? Probeer `tine kick @user [reason]`');
     }
     
     if (!targetMember.kickable) {
-      return message.reply('❌ I cannot kick this user.');
+      return message.reply('❌ Het is me niet gelukt, sorry.');
     }
     
-    const reason = args.slice(1).join(' ') || 'No reason provided';
+    const reason = args.slice(1).join(' ') || 'Omdat het kan';
     
     try {
       await targetMember.kick(reason);
-      message.reply(`✅ ${targetMember.user.tag} has been kicked. Reason: ${reason}`);
+      message.reply(`✅ ${targetMember.user.tag} werd uit de klas gesmeten. Reden? ${reason}.`);
     } catch (error) {
       console.error(error);
-      message.reply('❌ An error occurred while kicking the user.');
+      message.reply('❌ De persoon in kwestie was te zwaar om de klas uit te smijten.');
     }
   }
   
   // Command: ban
   if (command === 'ban') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      return message.reply('❌ You do not have permission to ban members.');
+      return message.reply('❌ Jij mag da nie doen >:(');
     }
     
     const targetMember = message.mentions.members.first();
     if (!targetMember) {
-      return message.reply('❌ Please mention a user to ban. Usage: `tine ban @user [reason]`');
+      return message.reply('❌ Wie bedoel je? Probeer `tine ban @user [reason]`');
     }
     
     if (!targetMember.bannable) {
-      return message.reply('❌ I cannot ban this user.');
+      return message.reply('❌ De persoon in kwestie is te zwaar om uit het raam te smijten.');
     }
     
-    const reason = args.slice(1).join(' ') || 'No reason provided';
+    const reason = args.slice(1).join(' ') || 'Omdat het kan';
     
     try {
       await targetMember.ban({ reason });
-      message.reply(`✅ ${targetMember.user.tag} has been banned. Reason: ${reason}`);
+      message.reply(`✅ ${targetMember.user.tag} werd uit het raam gesmeten. Waarom? ${reason}.`);
     } catch (error) {
       console.error(error);
-      message.reply('❌ An error occurred while banning the user.');
+      message.reply('❌ De persoon in kwestie is te zwaar om uit het raam te smijten.');
     }
   }
   
   // Command: unban
   if (command === 'unban') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      return message.reply('❌ You do not have permission to unban members.');
+      return message.reply('❌ Jij mag da nie doen >:(');
     }
     
     const userId = args[0];
@@ -159,23 +162,7 @@ client.on('messageCreate', async (message) => {
   
   // Command: help
   if (command === 'help') {
-    const helpMessage = `
-**📋 TineBot Commands**
-
-**Moderation Commands:**
-• \`tine mute @user [duration_minutes] [reason]\` - Mute a user (default: 10 minutes)
-• \`tine unmute @user\` - Unmute a user
-• \`tine kick @user [reason]\` - Kick a user from the server
-• \`tine ban @user [reason]\` - Ban a user from the server
-• \`tine unban <user_id>\` - Unban a user by their ID
-• \`tine help\` - Show this help message
-
-**Examples:**
-\`tine mute @User 30 Spamming\` - Mute user for 30 minutes
-\`tine kick @User Breaking rules\` - Kick user with reason
-\`tine ban @User\` - Ban user
-    `;
-    message.reply(helpMessage);
+    message.reply("Zoek het zelf uit. :P");
   }
 });
 
