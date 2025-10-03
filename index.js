@@ -214,7 +214,6 @@ client.on('messageCreate', async (message) => {
       `\`\`\`Ik ben al ${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s wakker en leef op ${commitHash}.\n` +
       `Mijn ping is ${messagePing}ms (message) en ${apiPing}ms (API)\`\`\``
     );
-    message.channel.stopTyping();
   }
 });
 
