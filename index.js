@@ -1,5 +1,9 @@
 require('dotenv').config();
 const { Client, GatewayIntentBits, PermissionsBitField, ActivityType } = require('discord.js');
+const fs = require('fs');
+
+// Load trigger words from file
+const triggerWords = JSON.parse(fs.readFileSync('./triggerWords.json', 'utf-8'));
 
 const client = new Client({
   intents: [
@@ -24,6 +28,22 @@ client.once('ready', () => {
 client.on('messageCreate', async (message) => {
   // Ignore bot messages
   if (message.author.bot) return;
+  
+  // Check for trigger words and react with raised eyebrow emoji
+  const messageContent = message.content.toLowerCase();
+  const containsTriggerWord = triggerWords.some(word => 
+    messageContent.includes(word.toLowerCase())
+  );
+  
+  if (containsTriggerWord) {
+    setTimeout(async () => {
+      try {
+        await message.react('🤨');
+      } catch (error) {
+        console.error('Failed to add reaction:', error);
+      }
+    }, 2000); // 2 second delay
+  }
   
   // Check if message starts with prefix
   if (!message.content.toLowerCase().startsWith(PREFIX.toLowerCase())) return;
