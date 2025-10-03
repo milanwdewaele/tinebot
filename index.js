@@ -183,6 +183,9 @@ client.on('messageCreate', async (message) => {
   // Command: help
   if (command === 'help') {
     message.reply("Zoek het godverdomme zelf uit.");
+    setTimeout(() => {
+      message.reply("Grapje, er zijn nog geen publieke commando's. Sorry!");
+    }, 3000);
   }
 
   if (command === 'status') {
@@ -198,9 +201,8 @@ client.on('messageCreate', async (message) => {
 
     message.reply(
       `Alles is oké :)\n` +
-      `Ik ben al ${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s wakker.\n` +
-      `Mijn ping is ${messagePing}ms (message), ${apiPing}ms (API)\n` +
-      `Ik controleer ${userCount} klasgenoten.`
+      `\`\`\`Ik ben al ${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s wakker.\n` +
+      `Mijn ping is ${messagePing}ms (message) en ${apiPing}ms (API)\`\`\``
     );
   }
 });
