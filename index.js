@@ -182,7 +182,26 @@ client.on('messageCreate', async (message) => {
   
   // Command: help
   if (command === 'help') {
-    message.reply("Zoek het zelf uit. :P");
+    message.reply("Zoek het godverdomme zelf uit.");
+  }
+
+  if (command === 'status') {
+    const uptime = process.uptime();
+    const uptimeHours = Math.floor(uptime / 3600);
+    const uptimeMinutes = Math.floor((uptime % 3600) / 60);
+    const uptimeSeconds = Math.floor(uptime % 60);
+
+    const apiPing = Math.round(client.ws.ping);
+    const messagePing = Date.now() - message.createdTimestamp;
+
+    const userCount = client.users.cache.size;
+
+    message.reply(
+      `Alles is oké :)\n` +
+      `Ik ben al ${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s wakker.\n` +
+      `Mijn ping is ${messagePing}ms (message), ${apiPing}ms (API)\n` +
+      `Ik controleer ${userCount} klasgenoten.`
+    );
   }
 });
 
