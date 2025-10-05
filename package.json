@@ -1,7 +1,7 @@
 {
   "name": "tinebot",
   "version": "1.0.0",
-  "description": "Discord Bot voor PROG1",
+  "description": "Discord Bot voor PROG1 door Milan",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

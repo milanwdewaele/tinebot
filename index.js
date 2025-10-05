@@ -26,10 +26,8 @@ client.once('ready', () => {
 
 
 client.on('messageCreate', async (message) => {
-  // Ignore bot messages
   if (message.author.bot) return;
 
-  // Check for trigger words and react with raised eyebrow emoji
   const messageContent = message.content.toLowerCase();
   const containsTriggerWord = triggerWords.some(word =>
     messageContent.includes(word.toLowerCase())
@@ -43,14 +41,12 @@ client.on('messageCreate', async (message) => {
     }
   }
 
-  // Check if message starts with prefix
+
   if (!message.content.toLowerCase().startsWith(PREFIX.toLowerCase())) return;
 
-  // Parse command and arguments
   const args = message.content.slice(PREFIX.length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
 
-  // Command: mute
   if (command === 'mute') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
       return message.reply('❌ Jij mag da nie doen >:(');
@@ -65,10 +61,9 @@ client.on('messageCreate', async (message) => {
       return message.reply('❌ Godverdomme ik krijg die persoon nie stil.');
     }
 
-    // Parse duration (default: 10 minutes)
-    let duration = 10 * 60 * 1000; // 10 minutes in ms
+    let duration = 10 * 60 * 1000;
     if (args[1] && !isNaN(args[1])) {
-      duration = parseInt(args[1]) * 60 * 1000; // Convert minutes to ms
+      duration = parseInt(args[1]) * 60 * 1000;
     }
 
     const reason = args.slice(args[1] && !isNaN(args[1]) ? 2 : 1).join(' ') || 'Omdat het kan';
@@ -82,7 +77,6 @@ client.on('messageCreate', async (message) => {
     }
   }
 
-  // Command: unmute
   if (command === 'unmute') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
       return message.reply('❌ Jij mag da nie doen >:(');
@@ -106,7 +100,6 @@ client.on('messageCreate', async (message) => {
     }
   }
 
-  // Command: kick
   if (command === 'kick') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
       return message.reply('❌ Jij mag da nie doen >:(');
@@ -132,7 +125,6 @@ client.on('messageCreate', async (message) => {
     }
   }
 
-  // Command: ban
   if (command === 'ban') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       return message.reply('❌ Jij mag da nie doen >:(');
@@ -158,7 +150,7 @@ client.on('messageCreate', async (message) => {
     }
   }
 
-  // Command: unban
+
   if (command === 'unban') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       return message.reply('❌ Jij mag da nie doen >:(');
@@ -178,7 +170,7 @@ client.on('messageCreate', async (message) => {
     }
   }
 
-  // Command: help
+
   if (command === 'help') {
     const sentMessage = await message.reply(`
       Tot je dienst!
@@ -196,7 +188,6 @@ client.on('messageCreate', async (message) => {
     );
   }
 
-  /* create command "dump" where it dumps all the contents from a text file from the first command argument. like dump role finds role.txt and messages the content of it. if the text file doesn't exist, send an error message */
   if (command === 'dump') {
     if (!args[0]) {
       return message.reply('❌ Dump wa? Misschien moet je eens een argument proberen meegeven?');
@@ -244,39 +235,38 @@ client.on('messageCreate', async (message) => {
   }
 
   if (command === 'ik ben') {
-  if (!args[0]) {
-    return message.reply('❌ Je moet kiezen tussen `wvl` of `ovl`, of kies `expert` of `noob`. Probeer `tine ik ben wvl`.');
+    if (!args[0]) {
+      return message.reply('❌ Je moet kiezen tussen `wvl` of `ovl`, of kies `expert` of `noob`. Probeer `tine ik ben wvl`.');
+    }
+
+    const roleMap = {
+      wvl: '1423736341245595730',
+      ovl: '1423736373936128111',
+      expert: '1423737874477486080',
+      noob: '1423737911542681753',
+      klas: '1422884833453150229'
+    };
+
+    const roleKey = args[0].toLowerCase();
+    const roleId = roleMap[roleKey];
+
+    if (!roleId) {
+      return message.reply('❌ Ik heb geen flauw idee waar da is. Kies `wvl` of `ovl`.');
+    }
+
+    const role = message.guild.roles.cache.get(roleId);
+    if (!role) {
+      return message.reply('❌ Fuck het lukt me nie, vraag een daddy.');
+    }
+
+    try {
+      message.member.roles.add(role);
+      message.reply(`✅ Leuk te weten da je van **${role.name}** bent.`);
+    } catch (error) {
+      console.error(error);
+      message.reply('❌ Fuck het lukt me nie, heb ik genoeg rechten?');
+    }
   }
-
-  // Replace these with your actual role IDs
-  const roleMap = {
-    wvl: '1423736341245595730',
-    ovl: '1423736373936128111',
-    expert: '1423737874477486080',
-    noob: '1423737911542681753',
-    klas: '1422884833453150229'
-  };
-
-  const roleKey = args[0].toLowerCase();
-  const roleId = roleMap[roleKey];
-
-  if (!roleId) {
-    return message.reply('❌ Ik heb geen flauw idee waar da is. Kies `wvl` of `ovl`.');
-  }
-
-  const role = message.guild.roles.cache.get(roleId);
-  if (!role) {
-    return message.reply('❌ Fuck het lukt me nie, vraag een daddy.');
-  }
-
-  try {
-    message.member.roles.add(role);
-    message.reply(`✅ Leuk te weten da je van **${role.name}** bent.`);
-  } catch (error) {
-    console.error(error);
-    message.reply('❌ Fuck het lukt me nie, heb ik genoeg rechten?');
-  }
-}
 
 });
 
