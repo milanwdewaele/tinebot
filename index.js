@@ -36,13 +36,11 @@ client.on('messageCreate', async (message) => {
   );
 
   if (containsTriggerWord) {
-    setTimeout(async () => {
-      try {
-        await message.react('🤨');
-      } catch (error) {
-        console.error('Failed to add reaction:', error);
-      }
-    }, 2000); // 2 second delay
+    try {
+      await message.react('🤨');
+    } catch (error) {
+      console.error('Failed to add reaction:', error);
+    }
   }
 
   // Check if message starts with prefix
@@ -182,10 +180,42 @@ client.on('messageCreate', async (message) => {
 
   // Command: help
   if (command === 'help') {
-    message.reply("Zoek het godverdomme zelf uit.");
+    const sentMessage = await message.reply(`
+      Tot je dienst!
+      \`tine help\` - Toont deze hulpboodschap.
+      \`tine status\` - Hoe het gaat met me.
+      \`tine ik ben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`tine dump rol\`)
+
+      Suggesties? Laat het aan een daddy weten.
+      `
+    );
+
     setTimeout(() => {
-      message.reply("Grapje, er zijn nog geen publieke commando's. Sorry!");
-    }, 3000);
+      sentMessage.delete().catch(() => { });
+    }, 30000
+    );
+  }
+
+  /* create command "dump" where it dumps all the contents from a text file from the first command argument. like dump role finds role.txt and messages the content of it. if the text file doesn't exist, send an error message */
+  if (command === 'dump') {
+    if (!args[0]) {
+      return message.reply('❌ Dump wa? Misschien moet je eens een argument proberen meegeven?');
+    }
+    const fileMap = {
+      rol: './roles.txt'
+    };
+    const fileKey = args[0].toLowerCase();
+    const filePath = fileMap[fileKey];
+    if (!filePath) {
+      return message.reply("❌ Da's geen geldig bestand om te dumpen dumbass.");
+    }
+    try {
+      const fileContent = fs.readFileSync(filePath, 'utf-8');
+      message.reply(`Hier is de inhoud van __${args[0].toLowerCase()}__\n\`\`\`${fileContent}\`\`\``);
+    } catch (error) {
+      console.error(error);
+      message.reply('❌ Er is iets misgegaan, oops :)');
+    }
   }
 
   if (command === 'status') {
@@ -211,10 +241,46 @@ client.on('messageCreate', async (message) => {
 
     message.reply(
       `Alles is oké :)\n` +
-      `\`\`\`Ik ben al ${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s wakker en leef op ${commitHash}.\n` +
+      `\`\`\`Ik ben al ${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s wakker en leef op commit ${commitHash}.\n` +
       `Mijn ping is ${messagePing}ms (message) en ${apiPing}ms (API)\`\`\``
     );
   }
 });
+
+// Command: getrole
+if (command === 'ik ben') {
+  if (!args[0]) {
+    return message.reply('❌ Je moet kiezen tussen `wvl` of `ovl`, of kies `expert` of `noob`. Probeer `tine ik ben wvl`.');
+  }
+
+  // Replace these with your actual role IDs
+  const roleMap = {
+    wvl: '1423736341245595730',
+    ovl: '1423736373936128111',
+    expert: '1423737874477486080',
+    noob: '1423737911542681753',
+    klas: '1422884833453150229'
+  };
+
+  const roleKey = args[0].toLowerCase();
+  const roleId = roleMap[roleKey];
+
+  if (!roleId) {
+    return message.reply('❌ Ik heb geen flauw idee waar da is. Kies `wvl` of `ovl`.');
+  }
+
+  const role = message.guild.roles.cache.get(roleId);
+  if (!role) {
+    return message.reply('❌ Fuck het lukt me nie, vraag een daddy.');
+  }
+
+  try {
+    await message.member.roles.add(role);
+    message.reply(`✅ Leuk te weten da je van **${role.name}** bent.`);
+  } catch (error) {
+    console.error(error);
+    message.reply('❌ Fuck het lukt me nie, heb ik genoeg rechten?');
+  }
+}
 
 client.login(process.env.DISCORD_TOKEN);
