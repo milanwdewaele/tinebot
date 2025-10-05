@@ -219,9 +219,6 @@ client.on('messageCreate', async (message) => {
   }
 
   if (command === 'status') {
-    // Start typing indicator
-    message.channel.sendTyping();
-
     const fs = require('fs');
 
     let commitHash;
