@@ -245,10 +245,8 @@ client.on('messageCreate', async (message) => {
       `Mijn ping is ${messagePing}ms (message) en ${apiPing}ms (API)\`\`\``
     );
   }
-});
 
-// Command: getrole
-if (command === 'ik ben') {
+  if (command === 'ik ben') {
   if (!args[0]) {
     return message.reply('❌ Je moet kiezen tussen `wvl` of `ovl`, of kies `expert` of `noob`. Probeer `tine ik ben wvl`.');
   }
@@ -275,12 +273,14 @@ if (command === 'ik ben') {
   }
 
   try {
-    await message.member.roles.add(role);
+    message.member.roles.add(role);
     message.reply(`✅ Leuk te weten da je van **${role.name}** bent.`);
   } catch (error) {
     console.error(error);
     message.reply('❌ Fuck het lukt me nie, heb ik genoeg rechten?');
   }
 }
+
+});
 
 client.login(process.env.DISCORD_TOKEN);
