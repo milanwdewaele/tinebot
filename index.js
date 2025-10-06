@@ -357,7 +357,7 @@ client.on('messageCreate', async (message) => {
       if (!response.ok) throw new Error('API error');
       const data = await response.json();
       const aiReply = data.choices?.[0]?.message?.content?.trim() || 'Geen antwoord ontvangen.';
-      await message.reply(`\`\`\`${aiReply.length > 1900 ? aiReply.slice(0, 1900) + '...' : aiReply}\`\`\``);
+      await message.reply(aiReply.length > 1900 ? aiReply.slice(0, 1900) + '...' : aiReply);
     } catch (err) {
       console.error(err);
       await message.reply('❌ Er is iets misgegaan met de AI. Blijkbaar kan ik nie goed nadenken vandaag.');
