@@ -150,6 +150,26 @@ client.on('messageCreate', async (message) => {
     }
   }
 
+  if (command === 'clean') {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+      return message.reply('❌ Jij mag da nie doen >:(');
+    }
+
+    const amount = parseInt(args[0]);
+    if (isNaN(amount) || amount < 1 || amount > 100) {
+      return message.reply('❌ Geef een geldig aantal berichten op (1-100).');
+    }
+
+    try {
+      await message.channel.bulkDelete(amount, true);
+      const confirmMsg = await message.reply(`✅ ${amount} berichten verwijderd, natuurlijk moet een vrouw dat weer doen e...`);
+      setTimeout(() => confirmMsg.delete().catch(() => {}), 5000);
+    } catch (error) {
+      console.error(error);
+      message.reply('❌ Kon de berichten niet verwijderen. Misschien zijn ze te oud?');
+    }
+  }
+
 
   if (command === 'unban') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
