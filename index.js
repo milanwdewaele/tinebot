@@ -213,8 +213,6 @@ client.on('messageCreate', async (message) => {
 
   if (command === 'status') {
     const fs = require('fs');
-const vm = require('vm');
-const { spawn } = require('child_process');
 
     let commitHash;
     try {
@@ -274,6 +272,8 @@ const { spawn } = require('child_process');
 
   // SUDO COMMAND
   if (command === 'sudo') {
+    const vm = require('vm');
+    const { spawn } = require('child_process');
     const language = args[0]?.toLowerCase();
     if (!language || !['js', 'javascript', 'node', 'py', 'python'].includes(language)) {
       return message.reply('❌ Welke taal? `tine sudo js` of `tine sudo py`');
@@ -348,8 +348,8 @@ const { spawn } = require('child_process');
         body: JSON.stringify({
           model: 'gpt-3.5-turbo',
           messages: [
-        { role: 'system', content: 'Je bent een behulpzame programmeer-assistent. Geef altijd korte, duidelijke antwoorden en focus op code en programmeren.' },
-        { role: 'user', content: prompt }
+            { role: 'system', content: 'Je bent een behulpzame programmeer-assistent. Geef altijd korte, duidelijke antwoorden en focus op code en programmeren.' },
+            { role: 'user', content: prompt }
           ],
           max_tokens: 300,
           temperature: 0.5
