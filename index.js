@@ -178,7 +178,7 @@ client.on('messageCreate', async (message) => {
       \`tine status\` - Hoe het gaat met me.
       \`tine ikben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`tine dump rol\`)
       \`tine sudo [taal]\` - Runt code die je opgeeft zoals javascript en python, daarna vraagt Tine om je code.
-      \`tine uhh [vraag]\` - Vraagt iets aan de AI. (Max 5 vragen per 10 minuten)
+      \`tine uhh [vraag]\` - Vraagt iets aan de DeepSeek AI. (Max 5 vragen per 10 minuten)
 
       Suggesties? Laat het aan een daddy weten.
       `
@@ -357,7 +357,7 @@ client.on('messageCreate', async (message) => {
       if (!response.ok) throw new Error('API error');
       const data = await response.json();
       const aiReply = data.choices?.[0]?.message?.content?.trim() || 'Geen antwoord ontvangen.';
-      await message.reply(`DeepSeek zegt:\n\`\`\`${aiReply.length > 1900 ? aiReply.slice(0, 1900) + '...' : aiReply}\`\`\``);
+      await message.reply(`\`\`\`${aiReply.length > 1900 ? aiReply.slice(0, 1900) + '...' : aiReply}\`\`\``);
     } catch (err) {
       console.error(err);
       await message.reply('❌ Er is iets misgegaan met de AI. Blijkbaar kan ik nie goed nadenken vandaag.');
