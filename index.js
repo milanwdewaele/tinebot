@@ -150,7 +150,7 @@ client.on('messageCreate', async (message) => {
     }
   }
 
-  if (command === 'clean') {
+  if (command === 'kuis') {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       return message.reply('❌ Jij mag da nie doen >:(');
     }
@@ -162,11 +162,11 @@ client.on('messageCreate', async (message) => {
 
     try {
       await message.channel.bulkDelete(amount, true);
-      const confirmMsg = await message.reply(`✅ ${amount} berichten verwijderd, natuurlijk moet een vrouw dat weer doen e...`);
+      const confirmMsg = await message.channel.send(`✅ ${amount} berichten verwijderd, natuurlijk moet een vrouw dat weer doen e...`);
       setTimeout(() => confirmMsg.delete().catch(() => {}), 5000);
     } catch (error) {
       console.error(error);
-      message.reply('❌ Kon de berichten niet verwijderen. Misschien zijn ze te oud?');
+      message.channel.send('❌ Kon de berichten niet verwijderen. Misschien zijn ze te oud?');
     }
   }
 
@@ -198,7 +198,7 @@ client.on('messageCreate', async (message) => {
       \`tine status\` - Hoe het gaat met me.
       \`tine ikben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`tine dump rol\`)
       \`tine sudo [taal]\` - Runt code die je opgeeft zoals javascript en python, daarna vraagt Tine om je code.
-      \`tine uhh [vraag]\` - Vraagt iets aan de DeepSeek AI. (Max 5 vragen per 10 minuten))
+      \`tine uhh [vraag]\` - Vraagt iets aan de Mistral AI. (Max 5 vragen per 10 minuten))
 
       Suggesties? Laat het aan een daddy weten.
       `
@@ -358,19 +358,19 @@ client.on('messageCreate', async (message) => {
     }
     await message.channel.sendTyping();
     try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
         method: 'POST',
         headers: {
+          'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`
+          'Authorization': `Bearer ${process.env.MISTRAL_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'deepseek/deepseek-chat-v3.1:free',
+          model: 'devstral-small-2505',
           messages: [
         { role: 'system', content: 'Je bent een behulpzame programmeer-assistent genaamt Tine met kennis van code en memes of memecultuur. Je bent nerdy. Je bent lector in de Howest. Geef altijd korte, duidelijke antwoorden help met code en programmeren. Vraag nooit om een follow-up vraag. Probeer altijd de vraag te beantwoorden en wees grof of gemeen. Antwoord altijd in het Nederlands. Als je de vraag niet begrijpt, zeg dat dan ook. Vraag nooit een follow-up vraag.'},
         { role: 'user', content: prompt }
           ],
-          max_tokens: 300,
           temperature: 0.5
         })
       });
@@ -380,7 +380,7 @@ client.on('messageCreate', async (message) => {
       await message.reply(aiReply.length > 1900 ? aiReply.slice(0, 1900) + '...' : aiReply);
     } catch (err) {
       console.error(err);
-      await message.reply('❌ Er is iets misgegaan met de AI. Blijkbaar kan ik nie goed nadenken vandaag.');
+      await message.reply('❌ DeepSeek wil niet reageren' + (err.message ? `: ${err.message}` : ''));
     }
   }
 
