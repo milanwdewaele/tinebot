@@ -176,7 +176,7 @@ client.on('messageCreate', async (message) => {
       Tot je dienst!
       \`tine help\` - Toont deze hulpboodschap.
       \`tine status\` - Hoe het gaat met me.
-      \`tine ik ben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`tine dump rol\`)
+      \`tine ikben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`tine dump rol\`)
 
       Suggesties? Laat het aan een daddy weten.
       `
@@ -234,9 +234,9 @@ client.on('messageCreate', async (message) => {
     );
   }
 
-  if (command === 'ik ben') {
+  if (command === 'ikben') {
     if (!args[0]) {
-      return message.reply('❌ Je moet kiezen tussen `wvl` of `ovl`, of kies `expert` of `noob`. Probeer `tine ik ben wvl`.');
+      return message.reply('❌ Dump wa? Misschien moet je eens een argument proberen meegeven?');
     }
 
     const roleMap = {
