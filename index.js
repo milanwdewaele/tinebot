@@ -345,10 +345,10 @@ client.on('messageCreate', async (message) => {
     const now = Date.now();
     if (!global.uhhRateLimit) global.uhhRateLimit = {};
     if (!global.uhhRateLimit[userId]) global.uhhRateLimit[userId] = [];
-    // Remove timestamps older than 10 minutes
-    global.uhhRateLimit[userId] = global.uhhRateLimit[userId].filter(ts => now - ts < 10 * 60 * 1000);
+    // Remove timestamps older than 5 minutes
+    global.uhhRateLimit[userId] = global.uhhRateLimit[userId].filter(ts => now - ts < 5 * 60 * 1000);
     if (global.uhhRateLimit[userId].length >= 5) {
-      return message.reply('❌ Bro doe rustig, jebt het maximum aantal vragen (5 per 10 minuten) bereikt.');
+      return message.reply('❌ Bro doe rustig, jebt het maximum aantal vragen (5 per 5 minuten) bereikt.');
     }
     global.uhhRateLimit[userId].push(now);
 
