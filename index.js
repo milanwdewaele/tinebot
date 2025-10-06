@@ -336,7 +336,7 @@ client.on('messageCreate', async (message) => {
     if (!prompt) {
       return message.reply('❌ Wat? Wat wil je vragen?');
     }
-
+    await message.channel.sendTyping();
     try {
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -347,7 +347,7 @@ client.on('messageCreate', async (message) => {
         body: JSON.stringify({
           model: 'deepseek/deepseek-chat-v3.1:free',
           messages: [
-        { role: 'system', content: 'Je bent een behulpzame programmeer-assistent. Geef altijd korte, duidelijke antwoorden en focus op code en programmeren.' },
+        { role: 'system', content: 'Je bent een behulpzame programmeer-assistent. Geef altijd korte, duidelijke antwoorden en focus op code en programmeren. Vraag nooit om een follow-up vraag, je beantwoord gewoon die ene vraag en niets erna.' },
         { role: 'user', content: prompt }
           ],
           max_tokens: 300,
@@ -357,7 +357,7 @@ client.on('messageCreate', async (message) => {
       if (!response.ok) throw new Error('API error');
       const data = await response.json();
       const aiReply = data.choices?.[0]?.message?.content?.trim() || 'Geen antwoord ontvangen.';
-      await message.reply(aiReply.length > 1900 ? aiReply.slice(0, 1900) + '...' : aiReply);
+      await message.reply(`DeepSeek zegt:\n\`\`\`${aiReply.length > 1900 ? aiReply.slice(0, 1900) + '...' : aiReply}\`\`\``);
     } catch (err) {
       console.error(err);
       await message.reply('❌ Er is iets misgegaan met de AI. Blijkbaar kan ik nie goed nadenken vandaag.');
