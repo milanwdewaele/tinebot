@@ -196,9 +196,9 @@ client.on('messageCreate', async (message) => {
       Tot je dienst!
       \`tine help\` - Toont deze hulpboodschap.
       \`tine status\` - Hoe het gaat met me.
-      \`tine ikben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`tine dump rol\`)
+      \`tine ik ben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`tine dump rol\`)
       \`tine sudo [taal]\` - Runt code die je opgeeft zoals javascript en python, daarna vraagt Tine om je code.
-      \`tine uhh [vraag]\` - Vraagt iets aan de DeepSeek AI. (Max 5 vragen per 10 minuten))
+      \`tine uhh [vraag]\` - Vraagt iets aan de DeepSeek AI. (Max 5 vragen per 10 minuten)
 
       Suggesties? Laat het aan een daddy weten.
       `
@@ -238,7 +238,7 @@ client.on('messageCreate', async (message) => {
     try {
       commitHash = fs.readFileSync('/opt/tinebot/commit.txt', 'utf8').trim();
     } catch (err) {
-      commitHash = 'localdev';
+      commitHash = 'onbekend (local)';
     }
 
     const uptime = process.uptime();
@@ -256,24 +256,26 @@ client.on('messageCreate', async (message) => {
     );
   }
 
-  if (command === 'ikben') {
+  if (command === 'ik') {
+    if (!args[1]) {
+      return message.reply('❌ Ik ben wat? Misschien moet je eens een argument proberen meegeven?');
+    }
+
     if (!args[0]) {
-      return message.reply('❌ Dump wa? Misschien moet je eens een argument proberen meegeven?');
+      return message.reply('❌ Ik.. wat? Misschien moet je eens een argument proberen meegeven?');
     }
 
     const roleMap = {
-      wvl: '1423736341245595730',
-      ovl: '1423736373936128111',
       expert: '1423737874477486080',
       noob: '1423737911542681753',
       klas: '1422884833453150229'
     };
 
-    const roleKey = args[0].toLowerCase();
+    const roleKey = args[1].toLowerCase();
     const roleId = roleMap[roleKey];
 
     if (!roleId) {
-      return message.reply('❌ Ik heb geen flauw idee waar da is. Kies `wvl` of `ovl`.');
+      return message.reply('❌ Ik heb geen flauw idee wat je bedoelt.');
     }
 
     const role = message.guild.roles.cache.get(roleId);
@@ -379,7 +381,7 @@ client.on('messageCreate', async (message) => {
       await message.reply(aiReply.length > 1900 ? aiReply.slice(0, 1900) + '...' : aiReply);
     } catch (err) {
       console.error(err);
-      await message.reply('❌ DeepSeek wil niet reageren' + (err.message ? `: ${err.message}` : ''));
+      await message.reply('❌ DeepSeek is ge-ratelimit. Probeer over een paar uur opnieuw. ' + (err.message ? `: ${err.message}` : ''));
     }
   }
 
