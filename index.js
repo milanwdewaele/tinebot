@@ -338,18 +338,17 @@ client.on('messageCreate', async (message) => {
     }
 
     try {
-      const apiKey = process.env.PERPLEXITY_API_KEY;
-      if (!apiKey) return message.reply('❌ API key ontbreekt. Raadpleeg een daddy.');
-      const response = await fetch('https://api.aiproxy.io/v1/chat/completions', {
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: 'deepseek/deepseek-chat-v3.1:free',
           messages: [
-            { role: 'system', content: 'Je bent een behulpzame programmeer-assistent. Geef altijd korte, duidelijke antwoorden en focus op code en programmeren.' },
-            { role: 'user', content: prompt }
+        { role: 'system', content: 'Je bent een behulpzame programmeer-assistent. Geef altijd korte, duidelijke antwoorden en focus op code en programmeren.' },
+        { role: 'user', content: prompt }
           ],
           max_tokens: 300,
           temperature: 0.5
