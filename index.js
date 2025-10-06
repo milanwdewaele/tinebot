@@ -178,7 +178,7 @@ client.on('messageCreate', async (message) => {
       \`tine status\` - Hoe het gaat met me.
       \`tine ikben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`tine dump rol\`)
       \`tine sudo [taal]\` - Runt code die je opgeeft zoals javascript en python, daarna vraagt Tine om je code.
-      \`tine uhh [vraag]\` - Vraagt iets aan de DeepSeek AI. (Max 5 vragen per 10 minuten)
+      \`tine uhh/help [vraag]\` - Vraagt iets aan de DeepSeek AI. (Max 5 vragen per 10 minuten))
 
       Suggesties? Laat het aan een daddy weten.
       `
