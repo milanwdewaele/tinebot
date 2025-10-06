@@ -163,7 +163,7 @@ client.on('messageCreate', async (message) => {
     try {
       await message.channel.bulkDelete(amount, true);
       const confirmMsg = await message.channel.send(`✅ ${amount} berichten verwijderd, natuurlijk moet een vrouw dat weer doen e...`);
-      setTimeout(() => confirmMsg.delete().catch(() => {}), 5000);
+      setTimeout(() => confirmMsg.delete().catch(() => { }), 5000);
     } catch (error) {
       console.error(error);
       message.channel.send('❌ Kon de berichten niet verwijderen. Misschien zijn ze te oud?');
@@ -358,18 +358,17 @@ client.on('messageCreate', async (message) => {
     }
     await message.channel.sendTyping();
     try {
-      const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.MISTRAL_API_KEY}`
+          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'mistral-large-latest',
+          model: 'deepseek/deepseek-chat-v3.1:free',
           messages: [
-        { role: 'system', content: 'Je bent een behulpzame programmeer-assistent genaamt Tine met kennis van code en memes of memecultuur. Je bent nerdy. Je bent lector in de Howest. Geef altijd korte, duidelijke antwoorden help met code en programmeren. Vraag nooit om een follow-up vraag. Probeer altijd de vraag te beantwoorden en wees grof of gemeen. Antwoord altijd in het Nederlands. Als je de vraag niet begrijpt, zeg dat dan ook. Vraag nooit een follow-up vraag.'},
-        { role: 'user', content: prompt }
+            { role: 'system', content: 'Je bent een behulpzame programmeer-assistent genaamt Tine met kennis van code en memes of memecultuur. Je bent nerdy. Je bent lector in de Howest. Geef altijd korte, duidelijke antwoorden help met code en programmeren. Vraag nooit om een follow-up vraag. Probeer altijd de vraag te beantwoorden en wees grof of gemeen. Antwoord altijd in het Nederlands. Als je de vraag niet begrijpt, zeg dat dan ook. Vraag nooit een follow-up vraag.' },
+            { role: 'user', content: prompt }
           ],
           temperature: 0.5
         })
