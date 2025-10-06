@@ -380,7 +380,7 @@ client.on('messageCreate', async (message) => {
       await message.reply(aiReply.length > 1900 ? aiReply.slice(0, 1900) + '...' : aiReply);
     } catch (err) {
       console.error(err);
-      await message.reply('❌ DeepSeek wil niet reageren' + (err.message ? `: ${err.message}` : ''));
+      await message.reply('❌ Mistral wil niet reageren' + (err.message ? `: ${err.message}` : ''));
     }
   }
 
