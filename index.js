@@ -320,7 +320,7 @@ client.on('messageCreate', async (message) => {
     }
   }
 
-  if (command === 'uhh' || command === 'uhhh' || command === 'help') {
+  if (command === 'uhh' || command === 'uhhh' || command === "uh" || command === 'help') {
     const userId = message.author.id;
     const now = Date.now();
     if (!global.uhhRateLimit) global.uhhRateLimit = {};
