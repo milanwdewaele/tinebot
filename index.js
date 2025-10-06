@@ -177,6 +177,8 @@ client.on('messageCreate', async (message) => {
       \`tine help\` - Toont deze hulpboodschap.
       \`tine status\` - Hoe het gaat met me.
       \`tine ikben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`tine dump rol\`)
+      \`tine sudo [taal]\` - Runt code die je opgeeft zoals javascript en python, daarna vraagt Tine om je code.
+      \`tine uhh [vraag]\` - Vraagt iets aan de AI. (Max 5 vragen per 10 minuten)
 
       Suggesties? Laat het aan een daddy weten.
       `
@@ -211,6 +213,8 @@ client.on('messageCreate', async (message) => {
 
   if (command === 'status') {
     const fs = require('fs');
+const vm = require('vm');
+const { spawn } = require('child_process');
 
     let commitHash;
     try {
@@ -265,6 +269,99 @@ client.on('messageCreate', async (message) => {
     } catch (error) {
       console.error(error);
       message.reply('❌ Fuck het lukt me nie, heb ik genoeg rechten?');
+    }
+  }
+
+  // SUDO COMMAND
+  if (command === 'sudo') {
+    const language = args[0]?.toLowerCase();
+    if (!language || !['js', 'javascript', 'node', 'py', 'python'].includes(language)) {
+      return message.reply('❌ Welke taal? `tine sudo js` of `tine sudo py`');
+    }
+
+    // Ask for code
+    const askMsg = await message.reply('💻 Wat code wilde runnen? Antwoord met uw code binnen 60 seconden.');
+    try {
+      const collected = await message.channel.awaitMessages({
+        filter: m => m.author.id === message.author.id,
+        max: 1,
+        time: 60000,
+        errors: ['time']
+      });
+      const codeMsg = collected.first();
+      const code = codeMsg.content;
+
+      let output = '';
+      if (['js', 'javascript', 'node'].includes(language)) {
+        // Run JS in a sandboxed VM
+        try {
+          const sandbox = {};
+          vm.createContext(sandbox);
+          output = vm.runInContext(code, sandbox, { timeout: 2000 });
+          if (typeof output !== 'string') output = require('util').inspect(output);
+        } catch (err) {
+          output = `❌ Error: ${err.message}`;
+        }
+      } else if (['py', 'python'].includes(language)) {
+        // Run Python code in a child process (safe, no input/output access)
+        const py = spawn('python', ['-c', code], { stdio: ['ignore', 'pipe', 'pipe'], timeout: 2000 });
+        let stdout = '', stderr = '';
+        py.stdout.on('data', data => { stdout += data; });
+        py.stderr.on('data', data => { stderr += data; });
+        await new Promise(resolve => py.on('close', resolve));
+        output = stderr ? `❌ Error: ${stderr}` : stdout || 'Geen output.';
+      }
+
+      // Truncate output if too long
+      if (output.length > 1900) output = output.slice(0, 1900) + '\n... (output ingekort)';
+      await message.reply(`\`\`\`${output}\`\`\``);
+    } catch (err) {
+      await message.reply('❌ Geen code ontvangen, sudo geannuleerd.');
+    }
+  }
+
+  if (command === 'uhh') {
+    const userId = message.author.id;
+    const now = Date.now();
+    if (!global.uhhRateLimit) global.uhhRateLimit = {};
+    if (!global.uhhRateLimit[userId]) global.uhhRateLimit[userId] = [];
+    // Remove timestamps older than 10 minutes
+    global.uhhRateLimit[userId] = global.uhhRateLimit[userId].filter(ts => now - ts < 10 * 60 * 1000);
+    if (global.uhhRateLimit[userId].length >= 5) {
+      return message.reply('❌ Bro doe rustig, jebt het maximum aantal vragen (5 per 10 minuten) bereikt.');
+    }
+    global.uhhRateLimit[userId].push(now);
+
+    const prompt = args.join(' ').trim();
+    if (!prompt) {
+      return message.reply('❌ Wat? Wat wil je vragen?');
+    }
+
+    try {
+      const apiKey = process.env.PERPLEXITY_API_KEY;
+      if (!apiKey) return message.reply('❌ API key ontbreekt. Raadpleeg een daddy.');
+      const response = await fetch('https://api.aiproxy.io/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+        { role: 'system', content: 'Je bent een behulpzame programmeer-assistent. Geef altijd korte, duidelijke antwoorden en focus op code en programmeren.' },
+        { role: 'user', content: prompt }
+          ],
+          max_tokens: 300,
+          temperature: 0.5
+        })
+      });
+      if (!response.ok) throw new Error('API error');
+      const data = await response.json();
+      const aiReply = data.choices?.[0]?.message?.content?.trim() || 'Geen antwoord ontvangen.';
+      await message.reply(aiReply.length > 1900 ? aiReply.slice(0, 1900) + '...' : aiReply);
+    } catch (err) {
+      console.error(err);
+      await message.reply('❌ Er is iets misgegaan met de AI. Blijkbaar kan ik nie goed nadenken vandaag.');
     }
   }
 
