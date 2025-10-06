@@ -366,7 +366,7 @@ client.on('messageCreate', async (message) => {
           'Authorization': `Bearer ${process.env.MISTRAL_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'devstral-small-2505',
+          model: 'mistral-large-latest',
           messages: [
         { role: 'system', content: 'Je bent een behulpzame programmeer-assistent genaamt Tine met kennis van code en memes of memecultuur. Je bent nerdy. Je bent lector in de Howest. Geef altijd korte, duidelijke antwoorden help met code en programmeren. Vraag nooit om een follow-up vraag. Probeer altijd de vraag te beantwoorden en wees grof of gemeen. Antwoord altijd in het Nederlands. Als je de vraag niet begrijpt, zeg dat dan ook. Vraag nooit een follow-up vraag.'},
         { role: 'user', content: prompt }
