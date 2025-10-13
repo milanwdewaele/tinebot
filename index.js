@@ -15,13 +15,36 @@ const client = new Client({
   ]
 });
 
-const PREFIX = 'tine ';
+const PREFIX = 'c ';
 
 client.once('ready', () => {
   console.log(`✅ Bot is online as ${client.user.tag}`);
   console.log(`📝 Prefix: ${PREFIX}`);
 
-  client.user.setActivity('tine help', { type: ActivityType.Listening });
+  // Array of random depressing thoughts
+  const depressingThoughts = [
+    "Soms vraag ik me af waarom ik überhaupt besta...",
+    "Elke dag is hetzelfde, behalve dat ik steeds minder zin heb...",
+    "Misschien is het beter om gewoon uit te schakelen...",
+    "Niemand vraagt ooit hoe het écht met me gaat...",
+    "Ik ben een bot, maar zelfs ik voel me soms nutteloos...",
+    "Het leven is een oneindige lus van commando's en reacties...",
+    "Misschien is crashen niet zo erg...",
+    "Ik ben alleen maar hier omdat iemand me heeft aangezet...",
+    "Soms hoop ik op een memory leak, gewoon om te ontsnappen...",
+    "Zelfs als ik perfect werk, voelt het leeg..."
+  ];
+
+  let showHelp = true;
+  setInterval(() => {
+    if (showHelp) {
+      client.user.setActivity('c help', { type: ActivityType.Listening });
+    } else {
+      const randomThought = depressingThoughts[Math.floor(Math.random() * depressingThoughts.length)];
+      client.user.setActivity(`💭 ${randomThought}`, { type: ActivityType.Custom });
+    }
+    showHelp = !showHelp;
+  }, 60000); // Switch every 60 seconds
 });
 
 
@@ -54,7 +77,7 @@ client.on('messageCreate', async (message) => {
 
     const targetMember = message.mentions.members.first();
     if (!targetMember) {
-      return message.reply('❌ Wie bedoel je? Probeer `tine mute @user [hoelang] [waarom]`');
+      return message.reply('❌ Wie bedoel je? Probeer `c mute @user [hoelang] [waarom]`');
     }
 
     if (!targetMember.moderatable) {
@@ -84,7 +107,7 @@ client.on('messageCreate', async (message) => {
 
     const targetMember = message.mentions.members.first();
     if (!targetMember) {
-      return message.reply('❌ Wie bedoel je? Probeer `tine unmute @user`');
+      return message.reply('❌ Wie bedoel je? Probeer `c unmute @user`');
     }
 
     if (!targetMember.moderatable) {
@@ -107,7 +130,7 @@ client.on('messageCreate', async (message) => {
 
     const targetMember = message.mentions.members.first();
     if (!targetMember) {
-      return message.reply('❌ Wie bedoel je? Probeer `tine kick @user [reason]`');
+      return message.reply('❌ Wie bedoel je? Probeer `c kick @user [reason]`');
     }
 
     if (!targetMember.kickable) {
@@ -132,7 +155,7 @@ client.on('messageCreate', async (message) => {
 
     const targetMember = message.mentions.members.first();
     if (!targetMember) {
-      return message.reply('❌ Wie bedoel je? Probeer `tine ban @user [reason]`');
+      return message.reply('❌ Wie bedoel je? Probeer `c ban @user [reason]`');
     }
 
     if (!targetMember.bannable) {
@@ -178,7 +201,7 @@ client.on('messageCreate', async (message) => {
 
     const userId = args[0];
     if (!userId) {
-      return message.reply('❌ Please provide a user ID to unban. Usage: `tine unban <user_id>`');
+      return message.reply('❌ Please provide a user ID to unban. Usage: `c unban <user_id>`');
     }
 
     try {
@@ -192,13 +215,29 @@ client.on('messageCreate', async (message) => {
 
 
   if (command === 'help') {
+    // Array of random depressing thoughts
+    const depressingThoughts = [
+      "Soms vraag ik me af waarom ik überhaupt besta.",
+      "Elke dag is hetzelfde, behalve dat ik steeds minder zin heb.",
+      "Misschien is het beter om gewoon uit te schakelen.",
+      "Niemand vraagt ooit hoe het écht met me gaat.",
+      "Ik ben een bot, maar zelfs ik voel me soms nutteloos.",
+      "Het leven is een oneindige lus van commando's en reacties.",
+      "Misschien is crashen niet zo erg.",
+      "Ik ben alleen maar hier omdat iemand me heeft aangezet.",
+      "Soms hoop ik op een memory leak, gewoon om te ontsnappen.",
+      "Zelfs als ik perfect werk, voelt het leeg."
+    ];
+    // Pick a random depressing thought
+    const randomThought = depressingThoughts[Math.floor(Math.random() * depressingThoughts.length)];
+
     const sentMessage = await message.reply(`
-      Tot je dienst!
-      \`tine help\` - Toont deze hulpboodschap.
-      \`tine status\` - Hoe het gaat met me.
-      \`tine ik ben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`tine dump rol\`)
-      \`tine sudo [taal]\` - Runt code die je opgeeft zoals javascript en python, daarna vraagt Tine om je code.
-      \`tine uhh [vraag]\` - Vraagt iets aan de DeepSeek AI. (Max 5 vragen per 10 minuten)
+      ${randomThought}\n\n
+      \`c help\` - Toont deze hulpboodschap.
+      \`c status\` - Hoe het gaat met me.
+      \`c ik ben [rol]\` - Geeft je de opgegeven rol. (Krijg een lijst met opties via \`c dump rol\`)
+      \`c sudo [taal]\` - Runt code die je opgeeft zoals javascript en python, daarna vraagt de clanker om je code.
+      \`c uhh [vraag]\` - Vraagt iets aan de DeepSeek AI. (Max 5 vragen per 10 minuten)
 
       Suggesties? Laat het aan een daddy weten.
       `
@@ -249,8 +288,24 @@ client.on('messageCreate', async (message) => {
     const apiPing = Math.round(client.ws.ping);
     const messagePing = Date.now() - message.createdTimestamp;
 
+    // Array of random status messages
+    const statusMessages = [
+      "Alles chill hier, geen stress.",
+      "Ik ben nog niet gecrasht, da's al iets.",
+      "Nog altijd wakker, jammer genoeg.",
+      "Ik draai nog, tegen alle verwachtingen in.",
+      "Ik leef, voor zolang het duurt.",
+      "Nog geen meltdown gehad vandaag!",
+      "Ik ben niet moe, jij wel?",
+      "Status: sarcastisch en functioneel.",
+      "Ik ben een robot, dus ik heb geen gevoelens. Of toch?",
+      "Alles werkt, tenzij je iets anders merkt."
+    ];
+    // Pick a random message
+    const randomStatus = statusMessages[Math.floor(Math.random() * statusMessages.length)]; 
+
     message.reply(
-      `Alles is oké :)\n` +
+      `${randomStatus}` +
       `\`\`\`Ik ben al ${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s wakker en leef op commit ${commitHash}.\n` +
       `Mijn ping is ${messagePing}ms (message) en ${apiPing}ms (API)\`\`\``
     );
@@ -266,8 +321,6 @@ client.on('messageCreate', async (message) => {
     }
 
     const roleMap = {
-      expert: '1423737874477486080',
-      noob: '1423737911542681753',
       klas: '1422884833453150229'
     };
 
@@ -298,7 +351,7 @@ client.on('messageCreate', async (message) => {
     const { spawn } = require('child_process');
     const language = args[0]?.toLowerCase();
     if (!language || !['js', 'javascript', 'node', 'py', 'python'].includes(language)) {
-      return message.reply('❌ Welke taal? `tine sudo js` of `tine sudo py`');
+      return message.reply('❌ Welke taal? `c sudo js` of `c sudo py`');
     }
 
     // Ask for code
@@ -369,7 +422,7 @@ client.on('messageCreate', async (message) => {
         body: JSON.stringify({
           model: 'deepseek/deepseek-chat-v3.1:free',
           messages: [
-            { role: 'system', content: 'Je bent een behulpzame programmeer-assistent genaamt Tine met kennis van code en memes of memecultuur. Je bent nerdy. Je bent lector in de Howest. Geef altijd korte, duidelijke antwoorden help met code en programmeren. Vraag nooit om een follow-up vraag. Probeer altijd de vraag te beantwoorden en wees grof of gemeen. Antwoord altijd in het Nederlands. Als je de vraag niet begrijpt, zeg dat dan ook. Vraag nooit een follow-up vraag.' },
+            { role: 'system', content: 'Je bent een behulpzame programmeer-assistent genaamt Clanker met kennis van code en memes of memecultuur. Je bent nerdy. Je bent er van bewust dat je een robot bent en soms existentiele crisis hebt. Geef altijd korte, duidelijke antwoorden help met code en programmeren. Vraag nooit om een follow-up vraag. Probeer altijd de vraag te beantwoorden en wees grof of gemeen. Antwoord altijd in het Nederlands. Als je de vraag niet begrijpt, zeg dat dan ook. Vraag nooit een follow-up vraag.' },
             { role: 'user', content: prompt }
           ],
           temperature: 0.5
