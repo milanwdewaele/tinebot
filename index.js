@@ -64,6 +64,16 @@ client.on('messageCreate', async (message) => {
     }
   }
 
+  /* if any message starts with "tine" reply with "not in use" */
+  if (message.content.toLowerCase().startsWith('tine')) {
+    return message.reply('❌ Niet in gebruik, gebruik `c` in plaats van `tine`.')
+      .then(sentMessage => {
+        setTimeout(() => {
+          sentMessage.delete().catch(() => { });
+        }, 5000);
+      })
+  }
+
 
   if (!message.content.toLowerCase().startsWith(PREFIX.toLowerCase())) return;
 
@@ -302,7 +312,7 @@ client.on('messageCreate', async (message) => {
       "Alles werkt, tenzij je iets anders merkt."
     ];
     // Pick a random message
-    const randomStatus = statusMessages[Math.floor(Math.random() * statusMessages.length)]; 
+    const randomStatus = statusMessages[Math.floor(Math.random() * statusMessages.length)];
 
     message.reply(
       `${randomStatus}` +
