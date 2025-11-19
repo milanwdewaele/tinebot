@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { info } = require('console');
 const { Client, GatewayIntentBits, PermissionsBitField, ActivityType } = require('discord.js');
 const fs = require('fs');
 
@@ -331,7 +332,8 @@ client.on('messageCreate', async (message) => {
     }
 
     const roleMap = {
-      klas: '1422884833453150229'
+      klas: '1422884833453150229',
+      info: '1440798084345893026',
     };
 
     const roleKey = args[1].toLowerCase();
@@ -348,7 +350,7 @@ client.on('messageCreate', async (message) => {
 
     try {
       message.member.roles.add(role);
-      message.reply(`✅ Leuk te weten da je van **${role.name}** bent.`);
+      message.reply(`✅ Ik heb **${role.name}** toegevoegd aan je profiel.`);
     } catch (error) {
       console.error(error);
       message.reply('❌ Fuck het lukt me nie, heb ik genoeg rechten?');
